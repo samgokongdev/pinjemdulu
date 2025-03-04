@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Kategori;
+use App\Models\User;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
 
