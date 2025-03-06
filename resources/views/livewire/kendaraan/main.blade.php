@@ -120,14 +120,14 @@ new class extends Component {
     @isset($aset)
     <div class="grid auto-rows-min gap-4 md:grid-cols-3">
         @foreach ($aset as $k)
-        <div class="relative aspect-auto overflow-hidden rounded-md shadow-xs border cursor-pointer {{ $k->is_ready ? 'bg-cyan-50 hover:bg-cyan-100' : 'bg-rose-100 hover:bg-rose-200' }} border-neutral-200 dark:border-neutral-700" wire:click="openModal({{ $k->id }})">
+        <div class="relative aspect-auto overflow-hidden rounded-md shadow-xs border cursor-pointer {{ $k->is_ready ? 'bg-cyan-50 hover:bg-cyan-100 dark:bg-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-600' : 'bg-rose-100 hover:bg-rose-200 dark:bg-rose-900 dark:hover:bg-rose-950' }} border-neutral-200 dark:border-neutral-700" wire:click="openModal({{ $k->id }})">
             <div class="px-4 py-4">
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-zinc-800 text-base">{{ $k->nama_aset }}</span>
+                    <span class="font-bold text-base">{{ $k->nama_aset }}</span>
                     <flux:badge color="{{ $k->is_ready ? 'cyan' : 'rose' }}" size="sm">{{ $k->kategori->nama }}</flux:badge>
                 </div>
                 <div class="mt-4">
-                    <div class="text-sm text-zinc-700">
+                    <div class="text-sm">
                         Nomor Identifikasi Aset : {{ $k->nomor_identifikasi_aset }}
                     </div>
                     @isset($k->keterangan)
@@ -161,21 +161,21 @@ new class extends Component {
             <div class="flex space-x-2">
                 <flux:spacer />
                 <flux:modal.trigger name="deleteAset">
-                    <flux:button variant="danger">Delete</flux:button>
+                    <flux:button variant="danger">Hapus Aset</flux:button>
                 </flux:modal.trigger>
                 <!-- <flux:button type="button" variant="danger" wire:click="delete({{$asetId}})">Delete</flux:button> -->
-                <flux:button class="ml-2" type="button" variant="primary" wire:click="update">Update</flux:button>
+                <flux:button class="ml-2" type="button" variant="primary" wire:click="update">Update Aset</flux:button>
             </div>
         </div>
     </flux:modal>
     <flux:modal name="deleteAset" class="min-w-[22rem]">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Delete project?</flux:heading>
+                <flux:heading size="lg">Anda Yakin?</flux:heading>
 
                 <flux:subheading>
-                    <p>You're about to delete this project.</p>
-                    <p>This action cannot be reversed.</p>
+                    <p>Aset ini akan dihapus</p>
+                    <p>Data yang sudah dihapus akan hilang dari sistem</p>
                 </flux:subheading>
             </div>
 
@@ -183,10 +183,10 @@ new class extends Component {
                 <flux:spacer />
 
                 <flux:modal.close>
-                    <flux:button variant="ghost">Cancel</flux:button>
+                    <flux:button variant="ghost">Batalkan</flux:button>
                 </flux:modal.close>
 
-                <flux:button class="cursor-pointer" type="button" variant="danger" wire:click="delete({{$asetId}})">Delete project</flux:button>
+                <flux:button class="cursor-pointer" type="button" variant="danger" wire:click="delete({{$asetId}})">Hapus Aset</flux:button>
             </div>
         </div>
     </flux:modal>

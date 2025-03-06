@@ -18,7 +18,7 @@ new class extends Component {
     protected function rules()
     {
         return [
-            'nama' => ['required', 'min:4', 'lowercase', Rule::unique('kategoris')->ignore($this->kategoriId)],
+            'namaKategori' => ['required', 'min:4', 'lowercase', Rule::unique('kategoris')->ignore($this->kategoriId)],
         ];
     }
 
@@ -30,40 +30,59 @@ new class extends Component {
         $this->namaKategori = $kategori->nama;
     }
 
+    public function update()
+    {
+        $check = $this->validate();
+
+        $aset = Kategori::findOrFail($this->kategoriId);
+        $aset->update([
+            'nama' => $this->namaKategori,
+        ]);
+
+        $this->modal('editKategori')->close();
+        $this->dispatch('reloadKategori');
+    }
+
     #[\Livewire\Attributes\On('reloadKategori')]
     public function reloadKategori() {}
 }; ?>
 
 <div>
-    <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-        @if (count($kategori) == 0)
-            <div>Tidak Ada Data Kategori</div>
-        @endif
+  <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+    @if (count($kategori) == 0)
+      <div>Tidak Ada Data Kategori</div>
+    @endif
 
-        @isset($kategori)
-            @foreach ($kategori as $k)
-                <div wire:click="openModal({{ $k->id }})"
-                    class="cursor-pointer hover:bg-zinc-100 relative aspect-auto overflow-hidden rounded-md shadow-xs border border-neutral-200 dark:border-neutral-700">
-                    <div class="px-4 py-4">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-zinc-800 text-base">{{ $k->nama }}</span>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        @endisset
-    </div>
-
-    <flux:modal name="editKategori" variant="flyout">
-        <div class="space-y-6">
-            <div>
-                <flux:heading size="lg">Edit Kategori</flux:heading>
-                <flux:subheading>Lengkapi form di bawah ini.</flux:subheading>
+    @isset($kategori)
+      @foreach ($kategori as $k)
+        <div wire:click="openModal({{ $k->id }})"
+          class="cursor-pointer hover:bg-neutral-200 text-neutral-700 dark:text-neutral-200 dark:hover:text-neutral-700 dark:hover:bg-neutral-200 relative aspect-auto overflow-hidden rounded-md shadow-xs border border-neutral-200 dark:border-neutral-700">
+          <div class="px-4 py-4">
+            <div class="flex justify-between items-center">
+              <span class="font-bold ">{{ $k->nama }}</span>
             </div>
-
-            <flux:input name="nama" label="Nama Kategori" placeholder="Cth : Toyota Avanza"
-                wire:model.live="namaKategori" />
+          </div>
         </div>
-    </flux:modal>
+      @endforeach
+    @endisset
+  </div>
+
+  <flux:modal name="editKategori" variant="flyout">
+    <div class="space-y-6">
+      <div>
+        <flux:heading size="lg">Edit Kategori</flux:heading>
+        <flux:subheading>Lengkapi form di bawah ini.</flux:subheading>
+      </div>
+
+      <flux:input name="nama" label="Nama Kategori" placeholder="Cth : Toyota Avanza"
+        wire:model.live="namaKategori" />
+
+      <div class="flex">
+        <flux:spacer />
+
+        <flux:button type="button" variant="primary" wire:click="update">Update</flux:button>
+      </div>
+    </div>
+  </flux:modal>
 
 </div>

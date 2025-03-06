@@ -15,6 +15,10 @@ Route::view('kategori', 'kategori')
     ->middleware(['auth', 'verified'])
     ->name('kategori');
 
+Route::view('booking', 'booking')
+    ->middleware(['auth', 'verified'])
+    ->name('booking');
+
 Route::view('daftarkendaraan', 'daftarkendaraan')
     ->middleware(['auth', 'verified'])
     ->name('daftarkendaraan');

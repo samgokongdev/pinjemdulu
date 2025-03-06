@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Kategori;
-use App\Models\User;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
 
@@ -25,6 +24,8 @@ new class extends Component {
     public function tambahKategori()
     {
         $check = $this->validate();
+
+        
 
         Kategori::create([
             'nama' => $this->nama,
