@@ -24,6 +24,7 @@
             <flux:navlist.group heading="Menu Administrator" class="grid">
                 <flux:navlist.item icon="tag" :href="route('kategori')" :current="request()->routeIs('kategori')" wire:navigate>{{ __('Kategori Kendaraan') }}</flux:navlist.item>
                 <flux:navlist.item icon="clipboard-document-list" :href="route('daftarkendaraan')" :current="request()->routeIs('daftarkendaraan')" wire:navigate>{{ __('Daftar Kendaraan') }}</flux:navlist.item>
+                <flux:navlist.item icon="clock" :href="route('sesi')" :current="request()->routeIs('sesi')" wire:navigate>{{ __('Daftar Sesi') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

@@ -15,9 +15,20 @@ Route::view('kategori', 'kategori')
     ->middleware(['auth', 'verified'])
     ->name('kategori');
 
+Route::view('sesi', 'sesi')
+    ->middleware(['auth', 'verified'])
+    ->name('sesi');
+
 Route::view('booking', 'booking')
     ->middleware(['auth', 'verified'])
     ->name('booking');
+
+
+
+Route::get('/bookingdetail/{id}', function ($id) {
+    return view('bookingdetail', ['id' => $id]);
+})->middleware(['auth', 'verified'])
+    ->name('bookingdetail');
 
 Route::view('daftarkendaraan', 'daftarkendaraan')
     ->middleware(['auth', 'verified'])

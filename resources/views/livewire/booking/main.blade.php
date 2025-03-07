@@ -3,7 +3,9 @@
 use App\Models\Aset;
 use App\Models\Booking;
 use App\Models\Kategori;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
 
@@ -72,11 +74,14 @@ new class extends Component {
     {
         $check = $this->validate();
 
-        Booking::create([
+        $first = Booking::create([
             'nama_peminjam' => $this->nama_peminjam,
             'seksi' => $this->seksi,
             'keperluan' => $this->keperluan,
             'tanggal_booking' => $this->tanggal_booking,
+            'kode_booking' => 'BOOK-' . now()->format('YmdHis') . '-' . Str::random(10),
+            'aset_id' => $this->asetId,
+            'user_id' => Auth::user()->id
         ]);
 
         $this->modal('cekTanggal')->close();
