@@ -16,17 +16,19 @@
         <flux:navlist variant="outline">
             <flux:navlist.group heading="Platform" class="grid">
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                <flux:navlist.item icon="calendar-date-range" :href="route('booking')" :current="request()->routeIs('booking')" wire:navigate>{{ __('Booking') }}</flux:navlist.item>
+                <flux:navlist.item icon="pencil" :href="route('booking')" :current="request()->routeIs('booking')" wire:navigate>{{ __('Booking') }}</flux:navlist.item>
+                <flux:navlist.item icon="calendar-date-range" :href="route('histori')" :current="request()->routeIs('histori')" wire:navigate>{{ __('Histori') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 
+        @if (Auth::user()->is_admin)
         <flux:navlist variant="outline">
             <flux:navlist.group heading="Menu Administrator" class="grid">
-                <flux:navlist.item icon="tag" :href="route('kategori')" :current="request()->routeIs('kategori')" wire:navigate>{{ __('Kategori Kendaraan') }}</flux:navlist.item>
-                <flux:navlist.item icon="clipboard-document-list" :href="route('daftarkendaraan')" :current="request()->routeIs('daftarkendaraan')" wire:navigate>{{ __('Daftar Kendaraan') }}</flux:navlist.item>
-                <flux:navlist.item icon="clock" :href="route('sesi')" :current="request()->routeIs('sesi')" wire:navigate>{{ __('Daftar Sesi') }}</flux:navlist.item>
+                <flux:navlist.item icon="tag" :href="route('kategori')" :current="request()->routeIs('kategori')" wire:navigate>{{ __('Kategori') }}</flux:navlist.item>
+                <flux:navlist.item icon="clipboard-document-list" :href="route('daftarkendaraan')" :current="request()->routeIs('daftarkendaraan')" wire:navigate>{{ __('Daftar Aset') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
+        @endif
 
         <flux:spacer />
 

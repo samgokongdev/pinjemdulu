@@ -27,6 +27,8 @@ new class extends Component {
     public $nama_peminjam;
     public $seksi;
     public $keperluan;
+    public $jam_mulai = "06:00:00";
+    public $jam_selesai = "06:59:00";
 
     protected function rules()
     {
@@ -34,6 +36,22 @@ new class extends Component {
             'tanggal_booking' => [
                 'required',
                 'date',
+            ],
+            'jam_mulai' => [
+                'required',
+                'date_format:H:i:s',
+                'before_or_equal:23:59:00',
+                function ($attribute, $value, $fail) {
+                    $this->validateJamMulai($fail);
+                }
+            ],
+            'jam_selesai' => [
+                'required',
+                'date_format:H:i:s',
+                'before_or_equal:23:59:00',
+                function ($attribute, $value, $fail) {
+                    $this->validateJamSelesai($fail);
+                }
             ],
             'nama_peminjam' => [
                 'required',
@@ -57,7 +75,34 @@ new class extends Component {
             'katalog' => Kategori::with(['asets' => function ($query) {
                 $query->where('is_ready', true);
             }])->get(),
+            'histori' => Booking::where('jam_selesai', '>', '11:00')->get()
         ];
+    }
+
+    private function validateJamMulai($fail)
+    {
+        $conflict = Booking::where('tanggal_booking', $this->tanggal_booking)
+            ->where('aset_id', $this->asetId)
+            ->where(function ($query) {
+                $query->whereBetween('jam_mulai', [$this->jam_mulai, $this->jam_selesai])
+                    ->orWhereBetween('jam_selesai', [$this->jam_mulai, $this->jam_selesai])
+                    ->orWhere(function ($query) {
+                        $query->where('jam_mulai', '<', $this->jam_mulai)
+                            ->where('jam_selesai', '>', $this->jam_selesai);
+                    });
+            })
+            ->exists();
+
+        if ($conflict) {
+            $fail('Jam booking bertabrakan dengan jadwal yang sudah ada.');
+        }
+    }
+
+    private function validateJamSelesai($fail)
+    {
+        if ($this->jam_selesai <= $this->jam_mulai) {
+            $fail('Jam selesai harus setelah jam mulai.');
+        }
     }
 
     public function openModalCekTgl($id)
@@ -79,6 +124,8 @@ new class extends Component {
             'seksi' => $this->seksi,
             'keperluan' => $this->keperluan,
             'tanggal_booking' => $this->tanggal_booking,
+            'jam_mulai' => $this->jam_mulai,
+            'jam_selesai' => $this->jam_selesai,
             'kode_booking' => 'BOOK-' . now()->format('YmdHis') . '-' . Str::random(10),
             'aset_id' => $this->asetId,
             'user_id' => Auth::user()->id
@@ -86,7 +133,9 @@ new class extends Component {
 
         $this->modal('cekTanggal')->close();
 
-        // $this->dispatch('reloadAset');
+        session()->flash('status', 'Data Booking Berhasil Ditambahkan');
+
+        $this->redirect('/histori');
     }
 }; ?>
 
@@ -146,19 +195,42 @@ new class extends Component {
                 <flux:input readonly variant="filled" value="{{$nomor_identifikasi_aset}}" label="Nomor Identifikasi" />
                 <flux:input readonly variant="filled" value="{{strtoupper($kategori_aset)}}" label="Jenis Aset" />
                 <flux:input type="date" max="2999-12-31" label="Date" wire:model="tanggal_booking" />
+                <flux:select size="sm" placeholder="Choose industry..." wire:model="jam_mulai" label="Jam Mulai">
+                    <flux:select.option value="06:00:00">06:00</flux:select.option>
+                    <flux:select.option value="07:00:00">07:00</flux:select.option>
+                    <flux:select.option value="08:00:00">08:00</flux:select.option>
+                    <flux:select.option value="09:00:00">09:00</flux:select.option>
+                    <flux:select.option value="10:00:00">10:00</flux:select.option>
+                    <flux:select.option value="11:00:00">11:00</flux:select.option>
+                    <flux:select.option value="12:00:00">12:00</flux:select.option>
+                    <flux:select.option value="13:00:00">13:00</flux:select.option>
+                    <flux:select.option value="14:00:00">14:00</flux:select.option>
+                    <flux:select.option value="15:00:00">15:00</flux:select.option>
+                    <flux:select.option value="16:00:00">16:00</flux:select.option>
+                    <flux:select.option value="17:00:00">17:00</flux:select.option>
+                </flux:select>
+                <flux:select size="sm" placeholder="Choose industry..." wire:model="jam_selesai" label="Jam Selesai">
+                    <flux:select.option value="06:59:00">07:00</flux:select.option>
+                    <flux:select.option value="07:59:00">08:00</flux:select.option>
+                    <flux:select.option value="08:59:00">09:00</flux:select.option>
+                    <flux:select.option value="09:59:00">10:00</flux:select.option>
+                    <flux:select.option value="10:59:00">11:00</flux:select.option>
+                    <flux:select.option value="11:59:00">12:00</flux:select.option>
+                    <flux:select.option value="12:59:00">13:00</flux:select.option>
+                    <flux:select.option value="13:59:00">14:00</flux:select.option>
+                    <flux:select.option value="14:59:00">15:00</flux:select.option>
+                    <flux:select.option value="15:59:00">16:00</flux:select.option>
+                    <flux:select.option value="16:59:00">17:00</flux:select.option>
+                    <flux:select.option value="17:59:00">18:00</flux:select.option>
+                </flux:select>
                 <flux:input label="Nama Peminjam" placeholder="Cth : Boaz Salosa" wire:model="nama_peminjam" />
                 <flux:input label="Seksi" placeholder="Cth : Boaz Salosa" wire:model="seksi" />
                 <flux:textarea rows="auto" wire:model="keperluan" label="Keperluan" />
             </div>
-
-
-            <!-- <flux:input name="nama" label="Nama Kategori" placeholder="Cth : Toyota Avanza"
-                wire:model.live="namaKategori" /> -->
-
             <div class="flex">
                 <flux:spacer />
 
-                <flux:button type="button" variant="primary" wire:click="pesan">Update</flux:button>
+                <flux:button type="button" variant="primary" wire:click="pesan">Simpan</flux:button>
             </div>
         </div>
     </flux:modal>

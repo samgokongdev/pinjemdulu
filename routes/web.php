@@ -12,12 +12,12 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::view('kategori', 'kategori')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'is_admin'])
     ->name('kategori');
 
-Route::view('sesi', 'sesi')
+Route::view('histori', 'histori')
     ->middleware(['auth', 'verified'])
-    ->name('sesi');
+    ->name('histori');
 
 Route::view('booking', 'booking')
     ->middleware(['auth', 'verified'])
@@ -31,7 +31,7 @@ Route::get('/bookingdetail/{id}', function ($id) {
     ->name('bookingdetail');
 
 Route::view('daftarkendaraan', 'daftarkendaraan')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'is_admin'])
     ->name('daftarkendaraan');
 
 Route::middleware(['auth'])->group(function () {

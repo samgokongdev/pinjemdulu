@@ -1,21 +1,35 @@
 <?php
 
 use App\Models\Booking;
+use App\Models\Sesi;
+use App\Models\Sesibooking;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Volt\Component;
 
 new class extends Component {
     public $id; // Properti untuk menangkap parameter
 
-    public function mount($id)
+    public $list_sesi_default;
+    public $booking_datas;
+    public $selected_sesi;
+    public $edited_sesi;
+
+    public function mount()
     {
-        $this->id = $id;
+
+        $this->booking_datas = Booking::where('id', '=', $this->id)->first();
+        if ($this->booking_datas->user_id != Auth::user()->id) {
+            // $this->redirectRoute('histori');
+            abort(403, 'ANDA SIAPA HAH???');
+        }
     }
 
     public function with()
     {
         return [
-            'booking_data' => Booking::find($this->id)->first(),
+            'booking_data' => Booking::where('id', '=', $this->id)->first(),
         ];
     }
 }; ?>
@@ -23,8 +37,7 @@ new class extends Component {
 <div>
     <div class="p-4 text-neutral-700 dark:text-neutral-200">
         <div class="mb-4 mt-2 flex items-center justify-between">
-            <flux:heading size="xl">Data Rincian Peminjaman</flux:heading>
-            <flux:button variant="primary">Simpan</flux:button>
+            <flux:heading size="xl">Data Rincian Peminjaman {{$id}}</flux:heading>
         </div>
         <div class="grid grid-cols-2 gap-4">
             <div>
@@ -37,13 +50,23 @@ new class extends Component {
                     <flux:subheading>{{$booking_data->nama_peminjam}}</flux:subheading>
                 </div>
                 <div class="py-2">
+                    <flux:heading>User ID</flux:heading>
+                    <flux:subheading>{{$booking_data->user_id}}</flux:subheading>
+                </div>
+                <div class="py-2">
                     <flux:heading>Seksi Peminjam</flux:heading>
                     <flux:subheading>{{$booking_data->seksi}}</flux:subheading>
                 </div>
                 <div class="py-2">
                     <flux:heading>Status</flux:heading>
-                    <flux:subheading>{{ $booking_data->is_app ? 'Disetujui' : 'Menunggu Persetujuan' }}</flux:subheading>
+                    <flux:subheading>{{ $booking_data->is_done ? 'Disetujui' : 'Menunggu Persetujuan' }}</flux:subheading>
                 </div>
+                @if ($booking_data->is_done)
+                <div class="py-2">
+                    <flux:heading>Status</flux:heading>
+                    <flux:subheading>{{ $booking_data->is_app ? 'Disetujui' : 'Tidak Disetujui' }}</flux:subheading>
+                </div>
+                @endif
             </div>
             <div>
                 <div class="py-2">
@@ -59,14 +82,14 @@ new class extends Component {
                     <flux:subheading>{{$booking_data->tanggal_booking}}</flux:subheading>
                 </div>
                 <div class="py-2">
+                    <flux:heading>Pukul</flux:heading>
+                    <flux:subheading>{{ \Carbon\Carbon::parse($booking_data->jam_mulai)->format('H:i') }}-{{ \Carbon\Carbon::parse($booking_data->jam_selesai)->format('H:i') }} WIB</flux:subheading>
+                </div>
+                <div class="py-2">
                     <flux:heading>Keperluan</flux:heading>
                     <flux:subheading>{{$booking_data->keperluan}}</flux:subheading>
                 </div>
             </div>
-        </div>
-
-        <div class="mb-4 mt-2 flex items-center justify-between">
-            <flux:heading size="xl">Sesi</flux:heading>
         </div>
     </div>
 </div>

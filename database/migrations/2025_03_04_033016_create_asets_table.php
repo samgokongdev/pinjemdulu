@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -21,6 +22,11 @@ return new class extends Migration
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });
+
+        DB::table('asets')->insert([
+            ['nama_aset' => 'Toyota Avanza', 'nomor_identifikasi_aset' => 'B1234XXX', 'kategori_id' => 1, 'tahun_pengadaan' => 2020, 'is_ready' => 1, 'keterangan' => "Hitam", 'created_at' => now(), 'updated_at' => now()],
+            ['nama_aset' => 'Toyota Rush', 'nomor_identifikasi_aset' => 'B1234ZZZ', 'kategori_id' => 1, 'tahun_pengadaan' => 2021, 'is_ready' => 1, 'keterangan' => "Putih", 'created_at' => now(), 'updated_at' => now()],
+        ]);
     }
 
     /**

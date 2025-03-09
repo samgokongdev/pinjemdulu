@@ -17,11 +17,13 @@ return new class extends Migration
             $table->string('seksi')->nullable();
             $table->text('keperluan');
             $table->date('tanggal_booking');
-            $table->text('kode_booking')->nullable()->unique();
+            $table->time('jam_mulai')->required();
+            $table->time('jam_selesai')->required();
+            $table->string('kode_booking')->nullable()->unique();
             $table->foreignId('aset_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->boolean('is_done')->default(0);
             $table->boolean('is_app')->default(0);
-
             $table->timestamps();
         });
     }
